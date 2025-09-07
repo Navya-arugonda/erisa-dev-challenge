@@ -2,18 +2,20 @@ from django.db import models
 from django.conf import settings 
 
 class Claim(models.Model):
-    claim_id = models.CharField(max_length=50, unique=True)
-    patient_name = models.CharField(max_length=120)
-    payer = models.CharField(max_length=120)
-    amount = models.DecimalField(max_digits=12, decimal_places=2)      # billed
-    flagged = models.BooleanField(default=False) 
-    
-    paid_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    status = models.CharField(max_length=30, choices=[
-        ("DENIED","Denied"),("PENDING","Pending"),("APPEALED","Appealed"),("PAID","Paid")
-    ], default="DENIED")
-    service_date = models.DateField(null=True, blank=True)
-    last_updated = models.DateTimeField(auto_now=True)
+    claim_id      = models.CharField(max_length=32, db_index=True)
+    patient_name  = models.CharField(max_length=128, db_index=True)
+    payer         = models.CharField(max_length=128, db_index=True)
+    amount        = models.DecimalField(max_digits=12, decimal_places=2)
+    paid_amount   = models.DecimalField(max_digits=12, decimal_places=2)
+    status        = models.CharField(max_length=32, db_index=True)
+    service_date  = models.DateField(db_index=True)
+    last_updated  = models.DateTimeField(auto_now=True, db_index=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['-last_updated']),
+            models.Index(fields=['status', '-last_updated']),
+        ]
 
     def __str__(self):
         return f"{self.claim_id} — {self.patient_name}"
