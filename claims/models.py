@@ -2,14 +2,14 @@ from django.db import models
 from django.conf import settings 
 
 class Claim(models.Model):
-    claim_id      = models.CharField(max_length=32, db_index=True)
-    patient_name  = models.CharField(max_length=128, db_index=True)
-    payer         = models.CharField(max_length=128, db_index=True)
-    amount        = models.DecimalField(max_digits=12, decimal_places=2)
-    paid_amount   = models.DecimalField(max_digits=12, decimal_places=2)
-    status        = models.CharField(max_length=32, db_index=True)
-    service_date  = models.DateField(db_index=True)
-    last_updated  = models.DateTimeField(auto_now=True, db_index=True)
+    claim_id = models.CharField(max_length=32, db_index=True)
+    patient_name= models.CharField(max_length=128, db_index=True)
+    payer= models.CharField(max_length=128, db_index=True)
+    amount= models.DecimalField(max_digits=12, decimal_places=2)
+    paid_amount= models.DecimalField(max_digits=12, decimal_places=2)
+    status= models.CharField(max_length=32, db_index=True)
+    service_date= models.DateField(db_index=True)
+    last_updated= models.DateTimeField(auto_now=True, db_index=True)
 
     class Meta:
         indexes = [
