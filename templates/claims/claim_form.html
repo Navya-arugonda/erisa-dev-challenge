@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{% if obj %}Edit{% else %}Create{% endif %} Claim{% endblock %}
+{% block content %}
+<div class="container">
+  <div id="claim-detail-target" class="card">
+    {% include "includes/claim_form.html" %}
+  </div>
+</div>
+{% endblock %}

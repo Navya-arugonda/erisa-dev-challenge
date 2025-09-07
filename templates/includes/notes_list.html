@@ -1,0 +1,8 @@
+{% for n in notes %}
+  <div class="note-row">
+    <small class="muted">{{ n.created_at|date:"M j, Y, g:i a" }}</small>
+    <div><b>{{ n.author.username }}</b> — {{ n.body|linebreaksbr }}</div>
+  </div>
+{% empty %}
+  <em>No notes yet.</em>
+{% endfor %}

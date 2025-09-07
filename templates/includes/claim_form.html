@@ -1,0 +1,23 @@
+<div class="card p-3">
+  <h4 class="mb-3">Add New Claim</h4>
+
+  <form hx-post="{% url 'claim-create' %}"
+        hx-target="#panel"
+        hx-swap="innerHTML">
+    {% csrf_token %}
+
+    <div class="mb-2">{{ form.claim_id.label_tag }} {{ form.claim_id }}</div>
+    <div class="mb-2">{{ form.patient_name.label_tag }} {{ form.patient_name }}</div>
+    <div class="mb-2">{{ form.payer.label_tag }} {{ form.payer }}</div>
+    <div class="mb-2">{{ form.amount.label_tag }} {{ form.amount }}</div>
+    <div class="mb-2">{{ form.paid_amount.label_tag }} {{ form.paid_amount }}</div>
+    <div class="mb-2">{{ form.status.label_tag }} {{ form.status }}</div>
+    <div class="mb-3">{{ form.service_date.label_tag }} {{ form.service_date }}</div>
+
+    <button class="btn btn-success" type="submit">Create Claim</button>
+    <button class="btn btn-secondary" type="button"
+            hx-get="."
+            hx-target="#panel"
+            hx-swap="innerHTML">Cancel</button>
+  </form>
+</div>

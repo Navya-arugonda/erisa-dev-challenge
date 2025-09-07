@@ -1,0 +1,71 @@
+<div id="claim-table" class="card">
+  <div style="margin-bottom:.75rem;">
+    <a class="btn"
+       href="{% url 'claim-list' %}"
+       hx-get="{% url 'claim-list' %}"
+       hx-target="#claim-table"
+       hx-swap="outerHTML"
+       hx-push-url="true">← Back to list</a>
+  </div>
+
+  <h3>Claim {{ claim.claim_id }}</h3>
+  <p><b>Status:</b> {{ claim.get_status_display }}</p>
+  <ul>
+    <li><b>Patient:</b> {{ claim.patient_name }}</li>
+    <li><b>Payer:</b> {{ claim.payer }}</li>
+    <li><b>Billed:</b> ${{ claim.amount }}</li>
+    <li><b>Paid:</b> ${{ claim.paid_amount }}</li>
+    <li><b>Service date:</b> {{ claim.service_date }}</li>
+  </ul>
+
+  {% if detail %}
+    <hr>
+    <p><b>CPT Codes:</b> {{ detail.cpt_codes|default:"—" }}</p>
+    <p><b>Denial Reason:</b> {{ detail.denial_reason|default:"—" }}</p>
+  {% endif %}
+
+  <div style="margin:.75rem 0; display:flex; gap:.5rem; flex-wrap:wrap;">
+    <form
+  hx-post="{% url 'claim-flag' claim.pk %}"
+  hx-target="#claim-table"
+  hx-swap="outerHTML"
+  style="display:inline">
+  {% csrf_token %}
+  <button class="btn" type="submit">
+    {% if claim.flagged %}Unflag{% else %}Flag for Review{% endif %}
+  </button>
+</form>
+
+
+    <button class="btn"
+            hx-get="{% url 'note-list' claim.pk %}"
+            hx-target="#notes-list"
+            hx-swap="innerHTML">
+      Show Notes
+    </button>
+  </div>
+
+  <h4>Notes</h4>
+  {% if request.user.is_authenticated %}
+    <form
+        hx-post="{% url 'note-add' claim.pk %}"
+        hx-target="#notes-list"
+        hx-swap="innerHTML"
+        class="mb-3">
+      {% csrf_token %}
+      <textarea name="body" class="input" placeholder="Add a note…"></textarea>
+      <button class="btn">Add Note</button>
+    </form>
+  {% else %}
+    <p>
+      <a class="link" href="{% url 'login' %}?next={% url 'claim-detail' claim.pk %}">Sign in</a>
+      to add a note.
+    </p>
+  {% endif %}
+
+  <div id="notes-list"
+       hx-get="{% url 'note-list' claim.pk %}"
+       hx-trigger="load"
+       hx-swap="innerHTML">
+  </div>
+</div>

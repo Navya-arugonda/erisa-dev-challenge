@@ -1,0 +1,11 @@
+<form method="post"
+      hx-post="{{ request.path }}"
+      hx-target="#claim-table"
+      hx-swap="outerHTML">
+  {% csrf_token %}
+  <p>Delete claim <b>{{ obj.claim_id }}</b> ({{ obj.patient_name }})?</p>
+  <div class="row">
+    <button class="btn" type="submit">Yes, delete</button>
+    <a class="btn" href="{% url 'claim-detail' obj.pk %}">Cancel</a>
+  </div>
+</form>

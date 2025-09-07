@@ -1,0 +1,6 @@
+id,patient_name,billed_amount,paid_amount,status,insurer_name,discharge_date
+30001,Virginia Rhodes,639787.37,16001.57,Denied,United Healthcare,12/19/2022
+30002,Maria Chen,3400.00,0.00,Denied,Aetna,7/16/2023
+30003,Ravi Kumar,5725.00,2000.00,Under Review,Cigna,6/30/2023
+30004,Sarah Johnson,2200.00,2200.00,Paid,Blue Cross Blue Shield,7/2/2023
+30005,Laura Martínez,4000.00,0.00,Denied,Humana,7/19/2023
