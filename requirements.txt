@@ -1,15 +1,15 @@
-# Core framework
 Django==5.2.5
 
-# On Windows, Django uses this for time zone data
 tzdata>=2022.1; platform_system == "Windows"
 
-# HTMX is loaded from a CDN in base.html, so no Python package required.
-# If you later add the middleware package, uncomment the line below:
-# django-htmx==1.17.2
 
-# For production (optional; NOT required to run locally)
-# gunicorn==22.0.0          # if deploying on Linux
-# whitenoise==6.6.0         # if serving static files without nginx
 django-htmx==1.17.2
+
+gunicorn==22.0.0          
+whitenoise==6.6.0         
+django-htmx==1.17.2
+
+dj-database-url
+psycopg2-binary
+python-dotenv
 
