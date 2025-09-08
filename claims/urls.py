@@ -17,4 +17,6 @@ urlpatterns = [
 
     # Dashboard
     path("dashboard/", views.dashboard, name="dashboard"),
+
+    path("claims/form/close/", views.claim_form_close, name="claim-form-close"),
 ]

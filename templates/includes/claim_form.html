@@ -1,23 +1,42 @@
-<div class="card p-3">
-  <h4 class="mb-3">Add New Claim</h4>
+{# Inline create/update form used inside the list page panel #}
+<div class="card">
+  <h3 class="mb-2">
+    {% if form.instance.pk %}Edit Claim {{ form.instance.claim_id }}{% else %}Create Claim{% endif %}
+  </h3>
 
-  <form hx-post="{% url 'claim-create' %}"
-        hx-target="#panel"
+  {% if form.errors %}
+    <div class="alert alert-danger">Please correct the errors below.</div>
+  {% endif %}
+
+  <form method="post"
+        hx-post="{% if form.instance.pk %}{% url 'claim-update' form.instance.pk %}{% else %}{% url 'claim-create' %}{% endif %}"
+        hx-target="#claim-detail-target"
         hx-swap="innerHTML">
     {% csrf_token %}
 
-    <div class="mb-2">{{ form.claim_id.label_tag }} {{ form.claim_id }}</div>
-    <div class="mb-2">{{ form.patient_name.label_tag }} {{ form.patient_name }}</div>
-    <div class="mb-2">{{ form.payer.label_tag }} {{ form.payer }}</div>
-    <div class="mb-2">{{ form.amount.label_tag }} {{ form.amount }}</div>
-    <div class="mb-2">{{ form.paid_amount.label_tag }} {{ form.paid_amount }}</div>
-    <div class="mb-2">{{ form.status.label_tag }} {{ form.status }}</div>
-    <div class="mb-3">{{ form.service_date.label_tag }} {{ form.service_date }}</div>
+    <div class="grid">
+      {{ form.non_field_errors }}
+      <label>Claim ID {{ form.claim_id }}</label>
+      <label>Patient {{ form.patient_name }}</label>
+      <label>Payer {{ form.payer }}</label>
+      <label>Billed {{ form.amount }}</label>
+      <label>Paid {{ form.paid_amount }}</label>
+      <label>Status {{ form.status }}</label>
+      <label>Service date {{ form.service_date }}</label>
+    </div>
 
-    <button class="btn btn-success" type="submit">Create Claim</button>
-    <button class="btn btn-secondary" type="button"
-            hx-get="."
-            hx-target="#panel"
-            hx-swap="innerHTML">Cancel</button>
+    <div class="mt-3" style="display:flex;gap:.5rem;">
+      <button class="btn btn-primary" type="submit">
+        {% if form.instance.pk %}Save{% else %}Create{% endif %}
+      </button>
+
+      {# Close just clears the panel—no page reload. #}
+      <button class="btn" type="button"
+              hx-get="{% url 'claim-form-close' %}"
+              hx-target="#claim-detail-target"
+              hx-swap="innerHTML">
+        Cancel
+      </button>
+    </div>
   </form>
 </div>

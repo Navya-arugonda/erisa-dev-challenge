@@ -9,7 +9,7 @@
   </div>
 
   <h3>Claim {{ claim.claim_id }}</h3>
-<p><b>Status:</b> {{ claim.status }}</p>
+  <p><b>Status:</b> {{ claim.status }}</p>
   <ul>
     <li><b>Patient:</b> {{ claim.patient_name }}</li>
     <li><b>Payer:</b> {{ claim.payer }}</li>
@@ -26,16 +26,15 @@
 
   <div style="margin:.75rem 0; display:flex; gap:.5rem; flex-wrap:wrap;">
     <form
-  hx-post="{% url 'claim-flag' claim.pk %}"
-  hx-target="#claim-table"
-  hx-swap="outerHTML"
-  style="display:inline">
-  {% csrf_token %}
-  <button class="btn" type="submit">
-    {% if claim.flagged %}Unflag{% else %}Flag for Review{% endif %}
-  </button>
-</form>
-
+      hx-post="{% url 'claim-flag' claim.pk %}"
+      hx-target="#claim-table"
+      hx-swap="outerHTML"
+      style="display:inline">
+      {% csrf_token %}
+      <button class="btn" type="submit">
+        {% if claim.flagged %}Unflag{% else %}Flag for Review{% endif %}
+      </button>
+    </form>
 
     <button class="btn"
             hx-get="{% url 'note-list' claim.pk %}"
@@ -47,25 +46,20 @@
 
   <h4>Notes</h4>
   {% if request.user.is_authenticated %}
-    <form
-        hx-post="{% url 'note-add' claim.pk %}"
-        hx-target="#notes-list"
-        hx-swap="innerHTML"
-        class="mb-3">
+    <form class="mb-3"
+          hx-post="{% url 'note-add' claim.pk %}"
+          hx-target="#notes-list"
+          hx-swap="innerHTML">
       {% csrf_token %}
       <textarea name="body" class="input" placeholder="Add a note…"></textarea>
       <button class="btn">Add Note</button>
     </form>
   {% else %}
-    <p>
-      <a class="link" href="{% url 'login' %}?next={% url 'claim-detail' claim.pk %}">Sign in</a>
-      to add a note.
-    </p>
+    <p><a class="link" href="{% url 'login' %}?next={% url 'claim-detail' claim.pk %}">Sign in</a> to add a note.</p>
   {% endif %}
 
   <div id="notes-list"
        hx-get="{% url 'note-list' claim.pk %}"
        hx-trigger="load"
-       hx-swap="innerHTML">
-  </div>
+       hx-swap="innerHTML"></div>
 </div>

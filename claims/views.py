@@ -6,6 +6,7 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 from django.db.models.functions import Trim
+from django.http import HttpResponse
 
 from .forms import ClaimForm
 from .models import Claim, ClaimDetail, ClaimNote
@@ -185,3 +186,8 @@ def dashboard(request):
         "top_payers": top_payers,
         "recent_notes": recent_notes,
     })
+
+
+def claim_form_close(request):
+    """HTMX helper to clear the inline form panel."""
+    return HttpResponse("")  # empty fragment -> panel becomes empty
