@@ -10,16 +10,19 @@ class Claim(models.Model):
     status= models.CharField(max_length=32, db_index=True)
     service_date= models.DateField(db_index=True)
     last_updated= models.DateTimeField(auto_now=True, db_index=True)
+    flagged= models.BooleanField(default=False, db_index=True)
 
     class Meta:
         indexes = [
-            models.Index(fields=['-last_updated']),
-            models.Index(fields=['status', '-last_updated']),
+            # speeds up typical filters/sorts; keep order asc for portability
+            models.Index(fields=['status', 'last_updated'], name='claim_status_lastupd_idx'),
+            models.Index(fields=['flagged', 'last_updated'], name='claim_flag_lastupd_idx'),
         ]
 
     def __str__(self):
         return f"{self.claim_id} — {self.patient_name}"
-
+    
+    
 class ClaimDetail(models.Model):
     # One-to-one with the main claim
     claim = models.OneToOneField(Claim, on_delete=models.CASCADE, related_name="detail")
