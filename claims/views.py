@@ -7,8 +7,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 from django.db.models.functions import Trim
 from django.http import HttpResponse
-from django.core.paginator import Paginator
-from django.db.models import Q
 
 from .forms import ClaimForm
 from .models import Claim, ClaimDetail, ClaimNote
@@ -25,36 +23,43 @@ def claim_list(request):
     q = (request.GET.get("q") or "").strip()
     status_sel = (request.GET.get("status") or "").strip()
 
-    # Only fetch the columns the table needs
-    qs = (Claim.objects
-          .only("id","claim_id","patient_name","payer","amount","paid_amount",
-                "status","service_date","flagged","last_updated")
-          .order_by("-last_updated"))
+    qs = Claim.objects.all().order_by("-last_updated")
 
-    # Search & filter
+    # --- search ---
     if q:
         qs = qs.filter(
             Q(claim_id__icontains=q) |
             Q(patient_name__icontains=q) |
             Q(payer__icontains=q)
         )
-    if status_sel:
-        qs = qs.filter(status=status_sel)
 
-    # Paginate to avoid rendering thousands of rows at once
-    paginator = Paginator(qs, 50)   # 50 rows per page (tweak as you like)
-    page_number = request.GET.get("page")  # ?page=2 etc.
-    page_obj = paginator.get_page(page_number)
+    # --- status options (no choices on model -> build from DB) ---
+    # Pull raw statuses, trim in DB where available, then dedupe/sort in Python.
+    raw_statuses = list(
+        Claim.objects.exclude(status__isnull=True)
+             .annotate(_s=Trim("status"))
+             .values_list("_s", flat=True)
+    )
+    statuses = sorted(
+        { (s or "").strip() for s in raw_statuses if (s or "").strip() },
+        key=lambda s: s.lower()
+    )
+
+    # --- apply status filter ---
+    if status_sel:
+        qs = qs.annotate(_s=Trim("status")).filter(_s__iexact=status_sel)
 
     ctx = {
-        "claims": page_obj,          # iterate over this in the table
-        "page_obj": page_obj,        # for pager controls
+        "claims": qs,
         "q": q,
         "status_sel": status_sel,
+        "statuses": statuses,
     }
 
     if _is_htmx(request):
+        # Return only the table for HTMX swaps
         return render(request, "includes/claim_table.html", ctx)
+
     return render(request, "claims/claim_list.html", ctx)
 
 def claim_detail(request, pk):
