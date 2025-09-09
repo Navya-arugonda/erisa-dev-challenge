@@ -38,4 +38,28 @@
     {% endfor %}
     </tbody>
   </table>
+  <div class="pager" id="pager">
+  {% if page_obj.has_previous %}
+    <a
+      hx-get="/?page={{ page_obj.previous_page_number }}&q={{ q }}&status={{ status_sel }}"
+      hx-target="#claim-table"
+      hx-push-url="true"
+      href="?page={{ page_obj.previous_page_number }}&q={{ q }}&status={{ status_sel }}">
+      ‹ Prev
+    </a>
+  {% endif %}
+
+  <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+  {% if page_obj.has_next %}
+    <a
+      hx-get="/?page={{ page_obj.next_page_number }}&q={{ q }}&status={{ status_sel }}"
+      hx-target="#claim-table"
+      hx-push-url="true"
+      href="?page={{ page_obj.next_page_number }}&q={{ q }}&status={{ status_sel }}">
+      Next ›
+    </a>
+  {% endif %}
+</div>
+
 </div>
